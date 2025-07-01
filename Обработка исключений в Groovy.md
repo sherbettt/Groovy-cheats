@@ -1,3 +1,6 @@
+ [pipeline-examples](https://github.com/jenkinsci/pipeline-examples)
+
+
 # Обработка исключений в Groovy
 
 В Groovy обработка исключений очень похожа на Java, но с некоторыми упрощениями и дополнительными возможностями. Вот основные примеры:
