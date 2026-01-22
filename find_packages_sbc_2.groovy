@@ -25,3 +25,31 @@ def findBuiltPackagesSimple() {
     
     return packages
 }
+
+// --------------------
+
+// Groovy DSL (Domain Specific Language) ниже
+
+/**
+ * Поиск собранных пакетов в формате runtel-sbc-*.deb
+ *
+ * @return список имен найденных пакетов или пустой список, если пакеты не найдены
+ */
+def findBuiltPackages() {
+    // (alt var) find /var/lib/jenkins/workspace -name 'runtel-sbc*.deb' -type f 2>/dev/null
+    // поиск runtel-sbc*.deb | извлечение имён без пути || если код возврата не 0 -> 'No packages found'
+    def packages = sh(
+        script: "ls /var/lib/jenkins/workspace/runtel-sbc*.deb 2>/dev/null | xargs -n 1 basename 2>/dev/null || echo 'No packages found'",
+        returnStdout: true
+    ).trim()
+    
+    if (packages == "No packages found") {
+        echo "Собранные пакеты не найдены"
+        return []
+    }
+    
+    def packageList = packages.split('\n')                              // Разбиваем строку с именами пакетов (по одному на строку) в массив
+    echo "Найдены пакеты runtel-sbc: ${packageList.join(', ')}"         // Логируем найденные пакеты в удобочитаемом формате
+    return packageList                                                  // Возвращаем список (массив) имен пакетов
+}
+
