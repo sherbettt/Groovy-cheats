@@ -101,6 +101,31 @@ def createContainer(){
     }
     **/
 
+def findBackup(String containerID, pmx6IP) {
+    sh """
+        ssh -o StrictHostKeyChecking=no root@${pmx6IP} '
+            echo "Находим последний бекап контейнера ${containerID}"        
+            BACKUP_FILE=\$(ls -t /stg/1tb/dump/vzdump-lxc-${containerID}-*.tar.zst | head -1)
+            echo "Бекап создан: \$BACKUP_FILE"
+        '
+    """
+}
+
+
+
+def restoreBackup(String containerID, pmx6IP) {
+    sh """
+        ssh -o StrictHostKeyChecking=no root@${pmx6IP} '
+            echo "Восстанавливаем бекап контейнера ${containerID}"
+            pct stop ${containerID}
+            pct destroy ${containerID}
+            pct restore ${containerID} vzdump-lxc-800-2026_02_02-14_04_07.tar.zst --storage ssd_1tb
+            pct start ${containerID}
+        '
+    """
+}
+
+
 
 }
 
